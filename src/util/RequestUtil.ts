@@ -26,6 +26,8 @@ export function sendRequest(request): Promise<any> {
                     reject(new Error(respBody));
                 }
             });
+        }, function(errorArg) {
+            reject(new Error(errorArg));
         });
     })
 }
