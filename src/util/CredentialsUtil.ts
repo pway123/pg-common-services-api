@@ -16,6 +16,7 @@ async function loadCredentials(CREDENTIAL_PROVIDER: TCredentialProvider): Promis
     const remoteProvider = () => new AWS.RemoteCredentials(configs);
     const ec2MetadataProvider = () => new AWS.EC2MetadataCredentials(configs);
     const sharedIniFileProvider = () => new AWS.SharedIniFileCredentials({ profile: "default" });
+    const enviromentProvider = () => new AWS.EnvironmentCredentials('AWS');
     const providers = [];
     const { awsContainerCredFullUri, awsContainerCredRelativeUri } = getEnvVars();
 
@@ -27,6 +28,10 @@ async function loadCredentials(CREDENTIAL_PROVIDER: TCredentialProvider): Promis
         case 'ec2-metadata':
             // EC2
             providers.push(ec2MetadataProvider);
+            break;
+        case 'enviroment':
+            // Lambda
+            providers.push(enviromentProvider);
             break;
         case 'credentials':
             // Local
@@ -42,8 +47,12 @@ async function loadCredentials(CREDENTIAL_PROVIDER: TCredentialProvider): Promis
             if (isEc2()) {
                 providers.push(ec2MetadataProvider)
             }
+            // Lambda
+            if (isLambda()) {
+                providers.push(enviromentProvider)
+            }
             // Local
-            if (!awsContainerCredFullUri && !awsContainerCredRelativeUri && !isEc2()) {
+            if (!awsContainerCredFullUri && !awsContainerCredRelativeUri && !isEc2() && !isLambda()) {
                 providers.push(sharedIniFileProvider)
             }
     }
@@ -68,4 +77,9 @@ function _isEc2(): boolean {
     }
 }
 
+function _isLambda(): boolean {
+    return !!process.env.LAMBDA_TASK_ROOT;
+}
+
 const isEc2 = memoize(_isEc2);
+const isLambda = memoize(_isLambda);

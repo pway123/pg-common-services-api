@@ -1,1 +1,1 @@
-export type TCredentialProvider = 'ecs' | 'ec2-metadata' | 'credentials';
+export type TCredentialProvider = 'ecs' | 'ec2-metadata' | 'credentials' | 'enviroment';
