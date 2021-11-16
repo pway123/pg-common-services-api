@@ -23,7 +23,7 @@
     "dist"
   ],
   "dependencies": {
-    "aws-sdk": "2.461.0",
+    "aws-sdk": "2.814.0",
     "memoizee": "^0.4.14"
   },
   "devDependencies": {
