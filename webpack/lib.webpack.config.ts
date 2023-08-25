@@ -2,7 +2,7 @@
 // This creates a base library webpack config
 // =============================================================================
 
-import CleanWebpackPlugin from "clean-webpack-plugin";
+import { CleanWebpackPlugin } from "clean-webpack-plugin";
 import * as webpack from "webpack";
 import { Config, createBaseServiceConfig } from "./base.webpack.config";
 const DtsBundleWebpack = require("dts-bundle-webpack");
