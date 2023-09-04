@@ -15,7 +15,7 @@ async function loadCredentials(CREDENTIAL_PROVIDER: TCredentialProvider): Promis
     const configs = { httpOptions: { timeout: 5000 }, maxRetries: 3 }
     const remoteProvider = () => new AWS.RemoteCredentials(configs);
     const ec2MetadataProvider = () => new AWS.EC2MetadataCredentials(configs);
-    const sharedIniFileProvider = () => new AWS.SharedIniFileCredentials({ profile: "default" });
+    const sharedIniFileProvider = () => new AWS.SharedIniFileCredentials();
     const enviromentProvider = () => new AWS.EnvironmentCredentials('AWS');
     const providers = [];
     const { awsContainerCredFullUri, awsContainerCredRelativeUri } = getEnvVars();
