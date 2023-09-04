@@ -2,7 +2,7 @@
   "name": "@pgateway/common-services-api",
   "main": "dist/index.js",
   "type": "dist/index.d.ts",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Utility to connect to AWS API GW",
   "homepage": "https://github.com/pway123/pg-common-services-api",
   "repository": "github:pway123/pg-common-services-api",
