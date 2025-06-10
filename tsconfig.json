@@ -1,38 +1,26 @@
 {
-    "compilerOptions": {
-        /* General settings */
-        "target": "es5",
-        /* Module settings */
-        "module": "es6",
-        "moduleResolution": "node",
-        /* Compiler settings */
-        "skipLibCheck": true,
-        "keyofStringsOnly": true,
-        // "allowSyntheticDefaultImports": true,
-        "forceConsistentCasingInFileNames": true,
-        "alwaysStrict": true,
-        /* Output Files */
-        "sourceMap": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "preserveConstEnums": true,
-        /* Paths */
-        // "baseUrl": "src",
-        "types": [
-            "node",
-            "jest"
-        ],
-        "lib": [
-            "es5",
-            "es2015.promise",
-            "es6",
-            "es7"
-        ]
-    },
-    "exclude": [
-        "**/node_modules/*"
-    ],
-    "include": [
-        "src/**/*",
-    ]
+  "compilerOptions": {
+    /* General settings */
+    "target": "es5",
+    /* Module settings */
+    "module": "es6",
+    "moduleResolution": "node",
+    /* Compiler settings */
+    "skipLibCheck": true,
+    "keyofStringsOnly": true,
+    // "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "alwaysStrict": true,
+    /* Output Files */
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "preserveConstEnums": true,
+    /* Paths */
+    // "baseUrl": "src",
+    "types": ["node", "jest"],
+    "lib": ["es5", "es2015.promise", "es6", "es7"]
+  },
+  "exclude": ["**/node_modules/*"],
+  "include": ["src/**/*", "global.d.ts"]
 }
