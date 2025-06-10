@@ -41,5 +41,5 @@ export function sendRequest(request: HttpRequest): Promise<any> {
 }
 
 function isForbiddenRequestOrServerError(response) {
-  return response.statusCode === 403 && response.statusCode >= 500;
+  return response.statusCode === 403 || response.statusCode >= 500;
 }

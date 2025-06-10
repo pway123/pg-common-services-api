@@ -7,12 +7,15 @@ import {
 } from "@aws-sdk/credential-providers";
 import { AwsCredentialIdentityProvider } from "@smithy/types";
 import { TCredentialProvider } from "../interfaces";
-import { getDateAtLaterMinute } from "./DateUtil";
+import { credentialsManager } from "./CredentialsManager";
 
 export async function checkCredentials(
   CREDENTIAL_PROVIDER: TCredentialProvider
 ): Promise<void> {
-  if (!globalThis.awsCredentials || isAWSCredentialsExpired()) {
+  if (
+    !credentialsManager.getCredentials() ||
+    credentialsManager.isAWSCredentialsExpired()
+  ) {
     await loadCredentials(CREDENTIAL_PROVIDER);
   }
 }
@@ -26,8 +29,10 @@ async function loadCredentials(
   switch (CREDENTIAL_PROVIDER) {
     case "ecs":
       provider = fromContainerMetadata(configs);
+      break;
     case "ec2-metadata":
       provider = fromInstanceMetadata(configs);
+      break;
     case "enviroment":
       provider = fromEnv();
       break;
@@ -38,12 +43,6 @@ async function loadCredentials(
       provider = defaultProvider();
   }
 
-  globalThis.awsCredentials = await provider();
-}
-
-function isAWSCredentialsExpired() {
-  return (
-    !globalThis.awsCredentials?.expiration ||
-    globalThis.awsCredentials.expiration < getDateAtLaterMinute(5)
-  );
+  const credential = await provider();
+  credentialsManager.setCredentials(credential);
 }

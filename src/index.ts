@@ -4,6 +4,7 @@ import { TCredentialProvider } from "./interfaces";
 import { HttpRequest as ProtocolHttpRequest } from "@smithy/protocol-http";
 import { SignatureV4 } from "@smithy/signature-v4";
 import { Sha256 } from "@aws-crypto/sha256-js";
+import { credentialsManager } from "./util/CredentialsManager";
 
 const REGION = "ap-southeast-1";
 const BASE_PATH = "/api/services/";
@@ -144,6 +145,7 @@ async function createRequest(
 
   if (!!payload) {
     request.body = JSON.stringify(payload);
+    request.headers["Content-Type"] = "application/json";
   }
   if (STAGE) {
     request.path = `/${STAGE}${request.path}`;
@@ -155,12 +157,14 @@ async function createRequest(
   if (SIGN) {
     await checkCredentials(CREDENTIAL_PROVIDER);
 
-    if (!globalThis.awsCredentials) {
+    const credentials = credentialsManager.getCredentials();
+
+    if (!credentials) {
       throw new Error("Credentials not found");
     }
 
     const signer = new SignatureV4({
-      credentials: globalThis.awsCredentials,
+      credentials: credentials,
       region: REGION, // Region is using here for signing
       service: "execute-api",
       sha256: Sha256,

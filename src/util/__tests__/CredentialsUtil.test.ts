@@ -2,6 +2,7 @@ import * as CredentialsUtil from "../CredentialsUtil";
 import { getDateAtLaterMinute } from "../DateUtil";
 import * as fs from "fs";
 import { AwsCredentialIdentity } from "@smithy/types";
+import { credentialsManager } from "../CredentialsManager";
 
 jest.mock("@aws-sdk/credential-providers", () => ({
   fromContainerMetadata: jest.fn(),
@@ -24,11 +25,12 @@ jest.mock("@aws-sdk/credential-provider-node", () => ({
 describe("CredentialsUtils", () => {
   beforeEach(() => {
     mockDefaultProvider.mockReset();
+    credentialsManager.clearCredentials();
   });
 
   afterEach(() => {
     jest.clearAllMocks();
-    delete globalThis.awsCredentials;
+    credentialsManager.clearCredentials();
   });
 
   describe("When initial credentials exists and its unexpired", () => {
@@ -38,14 +40,14 @@ describe("CredentialsUtils", () => {
         secretAccessKey: "initialSecret",
         expiration: getDateAtLaterMinute(30),
       };
-      globalThis.awsCredentials = initialCredentials;
+      credentialsManager.setCredentials(initialCredentials);
       jest
         .spyOn(fs, "readFileSync")
         .mockReturnValue({ toString: () => "" } as any);
 
       await CredentialsUtil.checkCredentials(null);
 
-      expect(globalThis.awsCredentials).toEqual(initialCredentials);
+      expect(credentialsManager.getCredentials()).toEqual(initialCredentials);
       expect(mockDefaultProvider).not.toHaveBeenCalled();
     });
   });
@@ -58,7 +60,7 @@ describe("CredentialsUtils", () => {
         expiration: getDateAtLaterMinute(4.9),
       };
 
-      globalThis.awsCredentials = initialCredentials;
+      credentialsManager.setCredentials(initialCredentials);
 
       mockDefaultProvider.mockResolvedValue(mockProviderCredentials);
       jest
@@ -67,14 +69,16 @@ describe("CredentialsUtils", () => {
 
       await CredentialsUtil.checkCredentials(null);
 
-      expect(globalThis.awsCredentials).toEqual(mockProviderCredentials);
+      expect(credentialsManager.getCredentials()).toEqual(
+        mockProviderCredentials
+      );
       expect(mockDefaultProvider).toHaveBeenCalled();
     });
   });
 
   describe("When no initial credentials exist", () => {
     it("should get credentials from provider", async () => {
-      delete globalThis.awsCredentials;
+      credentialsManager.clearCredentials();
 
       mockDefaultProvider.mockResolvedValue(mockProviderCredentials);
 
@@ -84,7 +88,9 @@ describe("CredentialsUtils", () => {
 
       await CredentialsUtil.checkCredentials(null);
 
-      expect(globalThis.awsCredentials).toEqual(mockProviderCredentials);
+      expect(credentialsManager.getCredentials()).toEqual(
+        mockProviderCredentials
+      );
       expect(mockDefaultProvider).toHaveBeenCalled();
     });
   });
@@ -97,7 +103,7 @@ describe("CredentialsUtils", () => {
         // expiration is omitted
       } as any;
 
-      globalThis.awsCredentials = initialCredentials;
+      credentialsManager.setCredentials(initialCredentials);
 
       mockDefaultProvider.mockResolvedValue(mockProviderCredentials);
 
@@ -107,7 +113,9 @@ describe("CredentialsUtils", () => {
 
       await CredentialsUtil.checkCredentials(null);
 
-      expect(globalThis.awsCredentials).toEqual(mockProviderCredentials);
+      expect(credentialsManager.getCredentials()).toEqual(
+        mockProviderCredentials
+      );
       expect(mockDefaultProvider).toHaveBeenCalled();
     });
   });
