@@ -5,7 +5,7 @@ jest.mock("../util/RequestUtil", () => ({
 import * as pgCommonServicesApi from "../index";
 
 const MOCK_HOST = "mockHost";
-const MOCK_ENDPOINT = "https://mock.com";
+const MOCK_ENDPOINT = "mock.com";
 
 const defaultRequest = {
   protocol: "https:",

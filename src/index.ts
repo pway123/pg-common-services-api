@@ -60,6 +60,7 @@ export async function config(options: {
   host?: string;
   stage?: string;
   credentialProvider?: TCredentialProvider;
+  isHttp?: boolean;
 }): Promise<void> {
   console.info("Common-service-api is using AWS SDK v3");
 
@@ -67,11 +68,10 @@ export async function config(options: {
     throw new Error("endpoint is a required field");
   }
 
-  if (!/^https?:\/\//.test(options.endpoint)) {
-    throw new Error("endpoint must include protocol (http:// or https://)");
-  }
+  ENDPOINT = options?.isHttp
+    ? new URL(`http://${options.endpoint}`)
+    : new URL(`https://${options.endpoint}`);
 
-  ENDPOINT = new URL(options.endpoint);
   SIGN = !!options.sign;
   PRIVATE = !!options.private;
   HOST = options.host;
